@@ -6,6 +6,8 @@ def main():
     board = Board(size)
     position = Board.check_num("Enter the knight's starting position: ", 'Invalid position!', board.x, board.y)
     board.calc_matrix(position)
+    board.possible_moves(position)
+    print('Here are the possible moves:')
     board.print_board()
 
 
