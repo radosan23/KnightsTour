@@ -23,12 +23,18 @@ class Board:
         self.matrix = [[marked if [i, j] == pos else empty for i in range(1, self.x + 1)] for j in range(1, self.y + 1)]
 
     def possible_moves(self, pos):
+        space = ' ' * (self.c_size - 1)
+        for n in self.get_poss_moves(pos):
+            self.matrix[n[1] - 1][n[0] - 1] = space + str(len(self.get_poss_moves(n)) - 1)
+
+    def get_poss_moves(self, pos):
         moves = [[-2, 1], [-2, -1], [2, 1], [2, -1], [-1, 2], [-1, -2], [1, 2], [1, -2]]
-        possible = ' ' * (self.c_size - 1) + 'O'
+        poss_moves = []
         for n in moves:
             move = [sum(x) for x in zip(pos, n)]
             if 0 < move[0] <= self.x and 0 < move[1] <= self.y:
-                self.matrix[move[1] - 1][move[0] - 1] = possible
+                poss_moves.append(move)
+        return poss_moves
 
     def print_board(self):
         lph = len(str(self.y))
