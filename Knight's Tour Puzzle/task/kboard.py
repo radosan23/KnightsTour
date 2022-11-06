@@ -32,12 +32,10 @@ class Board:
         self.matrix = [[vis if ([i, j] in self.visited) else empty
                         for i in range(1, self.x + 1)] for j in range(1, self.y + 1)]
 
-    def make_move(self, pos):
-        space = ' ' * (self.c_size - 1)
-        self.matrix[pos[1] - 1][pos[0] - 1] = space + 'X'
+    def make_move(self, pos, symbol='X'):
+        space = ' ' * (self.c_size - len(symbol))
+        self.matrix[pos[1] - 1][pos[0] - 1] = space + symbol
         self.visited.append(pos)
-        for n in self.get_poss_moves(pos):
-            self.matrix[n[1] - 1][n[0] - 1] = space + str(len(self.get_poss_moves(n)))
 
     def get_poss_moves(self, pos):
         moves = [[-2, 1], [-2, -1], [2, 1], [2, -1], [-1, 2], [-1, -2], [1, 2], [1, -2]]
@@ -47,6 +45,26 @@ class Board:
             if 0 < move[0] <= self.x and 0 < move[1] <= self.y and move not in self.visited:
                 poss_moves.append(move)
         return poss_moves
+
+    def show_poss_moves(self, pos):
+        space = ' ' * (self.c_size - 1)
+        for n in self.get_poss_moves(pos):
+            self.matrix[n[1] - 1][n[0] - 1] = space + str(len(self.get_poss_moves(n)))
+
+    def find_solution(self, pos, count=1):
+        self.make_move(pos, str(count))
+        end, win = self.check_end_cond(pos)
+        if win:
+            return True
+        elif end:
+            self.visited.remove(pos)
+            return False
+        else:
+            for move in self.get_poss_moves(pos):
+                if self.find_solution(move, count + 1):
+                    return True
+            self.visited.remove(pos)
+            return False
 
     def print_board(self):
         lph = len(str(self.y))
@@ -58,13 +76,10 @@ class Board:
         print(' ' * (lph + 2) +
               ' '.join(' ' * (self.c_size - len(str(x))) + str(x) for x in range(1, self.x + 1)) + '\n')
 
-    def check_end_cond(self, pos, c):
-        if not any(('_' in cell) for row in self.matrix for cell in row):
-            print('What a great tour! Congratulations!')
-            return True
+    def check_end_cond(self, pos):
+        if len(self.visited) == self.x * self.y:
+            return True, True
         elif not self.get_poss_moves(pos):
-            print('No more possible moves!')
-            print(f'Your knight visited {c} squares!')
-            return True
+            return True, False
         else:
-            return False
+            return False, False
