@@ -10,7 +10,7 @@ def play(board, pos):
         end, win = board.check_end_cond(pos)
         if end:
             break
-        pos = board.check_move('Enter your next move: ', 'Invalid move!', board.x, board.y, pos)
+        pos = board.check_move('Enter your next move: ', 'Invalid move! ', board.x, board.y, pos)
     if win:
         print('What a great tour! Congratulations!')
     else:

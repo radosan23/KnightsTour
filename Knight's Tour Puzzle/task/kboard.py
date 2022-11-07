@@ -14,9 +14,9 @@ class Board:
                 num = [int(x) for x in input(msg).split()]
                 if len(num) == 2 and 0 < num[0] <= lim_x and 0 < num[1] <= lim_y:
                     return num
-                print(wrong)
+                print(wrong, end='')
             except ValueError:
-                print(wrong)
+                print(wrong, end='')
 
     def check_move(self, msg, wrong, lim_x, lim_y, pos):
         while True:
@@ -24,7 +24,7 @@ class Board:
             if move in self.get_poss_moves(pos):
                 return move
             else:
-                print(wrong)
+                print(wrong, end='')
 
     def calc_matrix(self):
         vis = ' ' * (self.c_size - 1) + '*'
@@ -56,15 +56,12 @@ class Board:
         end, win = self.check_end_cond(pos)
         if win:
             return True
-        elif end:
-            self.visited.remove(pos)
-            return False
         else:
-            for move in self.get_poss_moves(pos):
+            for move in sorted(self.get_poss_moves(pos), key=lambda x: len(self.get_poss_moves(x))):
                 if self.find_solution(move, count + 1):
                     return True
             self.visited.remove(pos)
-            return False
+        return False
 
     def print_board(self):
         lph = len(str(self.y))
